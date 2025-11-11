@@ -3,18 +3,20 @@
 # Actualizar paquetes
 sudo apt update && sudo apt upgrade -y
 
-# Instalar python3, pip y venv si no están
-sudo apt install python3 python3-venv python3-pip unzip curl git -y
+# Instalar dependencias base
+sudo apt install -y python3 python3-venv python3-pip unzip curl git
 
-# Clonar repo de GitHub (si no existe)
-if [ ! -d ~/fastapi_app ]; then
-    git clone https://github.com/CardozoEIA/PracticaSO.git ~/fastapi_app
+# Clonar o actualizar el repositorio
+if [ ! -d ~/FinalSO ]; then
+    echo "Clonando repositorio..."
+    git clone https://github.com/CardozoEIA/FinalSO.git ~/FinalSO
 else
-    echo "Repo ya existe, saltando clone"
+    echo "Repositorio ya existe, actualizando..."
+    cd ~/FinalSO && git pull
 fi
 
-# Ir a la carpeta del proyecto
-cd ~/fastapi_app
+# Ir a la carpeta correcta (donde está main.py y requirements.txt)
+cd ~/FinalSO/ejercicio_final
 
 # Crear entorno virtual
 python3 -m venv venv
@@ -26,11 +28,13 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
-# Copiar servicio systemd (asegúrate de que fastapi.srv exista aquí)
+# Copiar servicio systemd
 sudo cp fastapi.srv /etc/systemd/system/fastapi.service
+
+# Recargar daemon y habilitar servicio
 sudo systemctl daemon-reload
 sudo systemctl enable fastapi
-sudo systemctl start fastapi
+sudo systemctl restart fastapi
 
-# Verificar estado
-sudo systemctl status fastapi
+# Verificar estado del servicio
+sudo systemctl status fastapi --no-pager
