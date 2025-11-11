@@ -12,11 +12,11 @@ echo "🔧 Construyendo imagen Docker para Lambda..."
 docker build --platform linux/amd64 -t $REPO_NAME .
 
 # ==== ETIQUETADO ====
-echo "🏷️ Etiquetando imagen como 'latest'..."
+
 docker tag $REPO_NAME:latest $ECR_URI
 
-# ==== LOGIN EN ECR ====
-echo "🔑 Iniciando sesión en Amazon ECR..."
+
+
 aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
 # ==== CREAR REPOSITORIO SI NO EXISTE ====
